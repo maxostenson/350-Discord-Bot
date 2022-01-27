@@ -14,14 +14,14 @@ CREATE TABLE "Level"
 
 CREATE TABLE "Group"
 (
-  GroupId VARCHAR(255) NOT NULL,
+  GroupId INT NOT NULL,
   GroupName VARCHAR(255) NOT NULL,
   PRIMARY KEY (GroupId)
 );
 
 CREATE TABLE "Rewards"
 (
-  RewardId VARCHAR(255) NOT NULL,
+  RewardId INT NOT NULL,
   RewardName VARCHAR(255) NOT NULL,
   RewardCost INT NOT NULL,
   PRIMARY KEY (RewardId)
@@ -29,10 +29,10 @@ CREATE TABLE "Rewards"
 
 CREATE TABLE "User"
 (
-  UserId VARCHAR(255) NOT NULL,
-  DiscordId VARCHAR(255) NOT NULL,
+  UserId INT NOT NULL,
+  DiscordId INT NOT NULL,
   CurrentExperience INT NOT NULL,
-  LastRewardedMessage VARCHAR(255),
+  LastRewardedMessage INT,
   WeekStartExperience INT NOT NULL,
   Points INT NOT NULL,
   Role VARCHAR(255) NOT NULL,
@@ -45,32 +45,32 @@ CREATE TABLE "User"
 
 CREATE TABLE "Feedback"
 (
-  FeedbackId VARCHAR(255) NOT NULL,
+  FeedbackId INT NOT NULL,
   Message VARCHAR(255) NOT NULL,
   DateCreated DATE NOT NULL,
-  CreatorId VARCHAR(255) NOT NULL,
+  CreatorId INT NOT NULL,
   PRIMARY KEY (FeedbackId),
   FOREIGN KEY (CreatorId) REFERENCES "User"(UserId)
 );
 
 CREATE TABLE "BugReport"
 (
-  ReportId VARCHAR(255) NOT NULL,
+  ReportId INT NOT NULL,
   BugMessage VARCHAR(255) NOT NULL,
-  GithubReportId VARCHAR(255),
-  IsOpen INT NOT NULL,
-  ContactedSubmitter INT NOT NULL,
+  GithubReportId INT,
+  IsOpen BOOL NOT NULL,
+  ContactedSubmitter BOOL NOT NULL,
   Status VARCHAR(255) NOT NULL,
   DateCreated DATE NOT NULL,
-  CreatorId VARCHAR(255) NOT NULL,
+  CreatorId INT NOT NULL,
   PRIMARY KEY (ReportId),
   FOREIGN KEY (CreatorId) REFERENCES "User"(UserId)
 );
 
 CREATE TABLE "GroupMembers"
 (
-  GroupId VARCHAR(255) NOT NULL,
-  UserId VARCHAR(255) NOT NULL,
+  GroupId INT NOT NULL,
+  UserId INT NOT NULL,
   PRIMARY KEY (GroupId, UserId),
   FOREIGN KEY (GroupId) REFERENCES "Group"(GroupId),
   FOREIGN KEY (UserId) REFERENCES "User"(UserId)
@@ -78,8 +78,8 @@ CREATE TABLE "GroupMembers"
 
 CREATE TABLE "EarnedRewards"
 (
-  UserId VARCHAR(255) NOT NULL,
-  RewardId VARCHAR(255) NOT NULL,
+  UserId INT NOT NULL,
+  RewardId INT NOT NULL,
   PRIMARY KEY (UserId, RewardId),
   FOREIGN KEY (UserId) REFERENCES "User"(UserId),
   FOREIGN KEY (RewardId) REFERENCES "Rewards"(RewardId)
@@ -87,8 +87,8 @@ CREATE TABLE "EarnedRewards"
 
 CREATE TABLE "BugFixing"
 (
-  Developer VARCHAR(255) NOT NULL,
-  ReportId VARCHAR(255) NOT NULL,
+  Developer INT NOT NULL,
+  ReportId INT NOT NULL,
   PRIMARY KEY (Developer, ReportId),
   FOREIGN KEY (Developer) REFERENCES "User"(UserId),
   FOREIGN KEY (ReportId) REFERENCES "BugReport"(ReportId)
