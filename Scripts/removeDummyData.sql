@@ -4,6 +4,9 @@ WHERE reportid = 1;
 DELETE FROM "BugReport"
 WHERE reportid = 1;
 
+DELETE FROM "BugReport"
+WHERE reportid = 2;
+
 DELETE FROM "GroupMembers"
 WHERE userId = 1;
 
@@ -12,6 +15,12 @@ WHERE userId = 3;
 
 DELETE FROM "Group"
 WHERE groupId = 1;
+
+DELETE FROM "Group"
+WHERE groupId = 2;
+
+DELETE FROM "Feedback"
+WHERE creatorId = 1;
 
 DELETE FROM "User"
 WHERE userid = '1';
@@ -39,3 +48,9 @@ WHERE levelnum = 2;
 
 DELETE FROM "Level"
 WHERE levelnum = 3;
+
+DELETE FROM "Rewards"
+WHERE rewardname= 'Colored Name';
+
+DELETE FROM "Rewards"
+WHERE rewardname = 'Animated Profile Picture';

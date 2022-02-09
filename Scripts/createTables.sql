@@ -8,20 +8,20 @@ CREATE TABLE "Role"
 CREATE TABLE "Level"
 (
   LevelNum INT NOT NULL,
-  ExpToNextLevel INT NOT NULL,
+  ExpThreshold INT NOT NULL,
   PRIMARY KEY (LevelNum)
 );
 
 CREATE TABLE "Group"
 (
-  GroupId INT NOT NULL,
+  GroupId SERIAL NOT NULL,
   GroupName VARCHAR(255) NOT NULL,
   PRIMARY KEY (GroupId)
 );
 
 CREATE TABLE "Rewards"
 (
-  RewardId INT NOT NULL,
+  RewardId SERIAL NOT NULL,
   RewardName VARCHAR(255) NOT NULL,
   RewardCost INT NOT NULL,
   PRIMARY KEY (RewardId)
@@ -29,8 +29,9 @@ CREATE TABLE "Rewards"
 
 CREATE TABLE "User"
 (
-  UserId INT NOT NULL,
+  UserId SERIAL NOT NULL,
   DiscordId INT NOT NULL,
+  Name VARCHAR(255) NOT NULL,
   CurrentExperience INT NOT NULL,
   LastRewardedMessage INT,
   WeekStartExperience INT NOT NULL,
@@ -45,7 +46,7 @@ CREATE TABLE "User"
 
 CREATE TABLE "Feedback"
 (
-  FeedbackId INT NOT NULL,
+  FeedbackId SERIAL NOT NULL,
   Message VARCHAR(255) NOT NULL,
   DateCreated DATE NOT NULL,
   CreatorId INT NOT NULL,
@@ -55,7 +56,7 @@ CREATE TABLE "Feedback"
 
 CREATE TABLE "BugReport"
 (
-  ReportId INT NOT NULL,
+  ReportId SERIAL NOT NULL,
   BugMessage VARCHAR(255) NOT NULL,
   GithubReportId INT,
   IsOpen BOOL NOT NULL,
