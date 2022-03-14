@@ -16,7 +16,7 @@ DEFAULT_PREFIX = '!'
 async def run():
     description = "A Discord database bot"
 
-    db = await asyncpg.create_pool(**db_credentials)
+    db = await asyncpg.connect(**db_credentials)
     print("Database Connection successful")
 
     bot = Bot(description=description, db=db)
@@ -53,29 +53,32 @@ async def run():
         for row in rows:
             await ctx.send(f"```{row}```")
 
-
-
-    @bot.command()
-    async def update(ctx, *, new_data: str):
-        connection = await bot.db.acquire()
-        async with connection.transaction():
-            query = "UPDATE users SET data = $1 WHERE id = $2"
-            await bot.db.execute(query, new_data, ctx.author.id)
-        await bot.db.release(connection)
-
-        await ctx.send(f"NEW:\n{ctx.author.id}: {new_data}")
-
     @bot.command(alasis='p')
     async def points(ctx):
-        query = 'SELECT * FROM "User" WHERE user.discordid = $1;'
-        row = await bot.db.fetch(query, ctx.author.id)
-        if row is not None:
-            await ctx.send(f"You have {row[6]:,d} points.")
+        query = 'SELECT * FROM "User" WHERE userid = $1;'
+        row = await bot.db.fetch(query, ctx.author.id/1000000000)
+        if row:
+            await ctx.send(f"You have {row[0]['points']} points.")
         else:
-            query = 'INSERT INTO "Users" VALUES ($1, $2, $3, $4, $5, $6)'
-            result = await bot.db.fetch(query, ctx.author.id, ctx.author.name, 0, time.time(), 0, 1)
+            query = 'INSERT INTO "User" VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)'
+            result = await bot.db.execute(query, ctx.author.id/1000000000, ctx.author.id/1000000000, ctx.author.name, 0, time.time(), 0, 1, "User", 1)
+            query = 'SELECT * FROM "User" WHERE userid = $1;'
+            row = await bot.db.fetch(query, ctx.author.id / 1000000000)
+            await ctx.send(f"You have {row[0]['points']} points.")
 
+    @bot.event
+    async def on_message(message):
+        query = 'SELECT * FROM "User" WHERE userid = $1;'
+        row = await bot.db.fetch(query, message.author.id / 1000000000)
+        if row:
+            query = 'UPDATE "User" SET points = $1 WHERE userid = $2;'
+            result = await bot.db.execute(query, row[0]['points'] + 1, message.author.id / 1000000000)
+        else:
+            query = 'INSERT INTO "User" VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)'
+            result = await bot.db.execute(query, message.author.id / 1000000000, message.author.id / 1000000000,
+                                              message.author.name, 0, time.time(), 0, 1, "User", 1)
 
+        await bot.process_commands(message)
 
     try:
         await bot.start(TOKEN)
