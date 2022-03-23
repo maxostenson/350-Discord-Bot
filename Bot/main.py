@@ -3,7 +3,7 @@ from discord.ext import commands
 import asyncio
 import asyncpg
 import json
-import time
+import datetime
 
 from config_token import TOKEN
 
@@ -38,6 +38,20 @@ async def run():
             await ctx.send(f"```{row}```")
 
     @bot.command()
+    async def bugReport(ctx):
+        query = 'SELECT count(*) FROM "BugReport";'
+        rows = await bot.db.fetch(query)
+        query = 'INSERT INTO "BugReport" VALUES ($1, $2, $3, $4, $5, $6, $7, $8)'
+        result = await bot.db.execute(query, rows[0]['count'] + 1, ctx.message.content[11:], 0, True, False, 'Open', datetime.date.today(), ctx.author.id/1000000000)
+
+    @bot.command()
+    async def subFeed(ctx):
+        query = 'SELECT count(*) FROM "Feedback";'
+        rows = await bot.db.fetch(query)
+        query = 'INSERT INTO "Feedback" VALUES ($1, $2, $3, $4)'
+        result = await bot.db.execute(query, rows[0]['count'] + 1, ctx.message.content[9:], datetime.date.today(), ctx.author.id / 1000000000)
+
+    @bot.command()
     async def bugreports(ctx):
         query = 'SELECT * FROM "BugReport";'
 
@@ -61,7 +75,7 @@ async def run():
             await ctx.send(f"You have {row[0]['points']} points.")
         else:
             query = 'INSERT INTO "User" VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)'
-            result = await bot.db.execute(query, ctx.author.id/1000000000, ctx.author.id/1000000000, ctx.author.name, 0, time.time(), 0, 1, "User", 1)
+            result = await bot.db.execute(query, ctx.author.id/1000000000, ctx.author.id/1000000000, ctx.author.name, 0, datetime.time(), 0, 1, "User", 1)
             query = 'SELECT * FROM "User" WHERE userid = $1;'
             row = await bot.db.fetch(query, ctx.author.id / 1000000000)
             await ctx.send(f"You have {row[0]['points']} points.")
@@ -76,7 +90,7 @@ async def run():
         else:
             query = 'INSERT INTO "User" VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)'
             result = await bot.db.execute(query, message.author.id / 1000000000, message.author.id / 1000000000,
-                                              message.author.name, 0, time.time(), 0, 1, "User", 1)
+                                              message.author.name, 0, datetime.time(), 0, 1, "User", 1)
 
         await bot.process_commands(message)
 
