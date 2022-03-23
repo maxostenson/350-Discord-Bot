@@ -11,6 +11,7 @@ f = open(f"./cred.json", "r")
 db_credentials = json.loads(f.read())
 
 DEFAULT_PREFIX = '!'
+ADMINS = [771443587086549012, 268415752564899841, 620001065659531307]
 
 
 async def run():
@@ -23,19 +24,21 @@ async def run():
 
     @bot.command()
     async def users(ctx):
-        query = 'SELECT * FROM "User";' #" WHERE 'user.userid' = $1;"
+        if ctx.author.id in ADMINS:
+            query = 'SELECT * FROM "User";' #" WHERE 'user.userid' = $1;"
 
-        rows = await bot.db.fetch(query) #, ctx.author.id)
-        for row in rows:
-            await ctx.send(f"```userid: {row[0]}, Discord ID: {row[1]}, Discord Name: {row[2]}, Current XP: {row[3]}```")
+            rows = await bot.db.fetch(query) #, ctx.author.id)
+            for row in rows:
+                await ctx.send(f"```userid: {row[0]}, Discord ID: {row[1]}, Discord Name: {row[2]}, Current XP: {row[3]}```")
 
     @bot.command()
     async def feedback(ctx):
-        query = 'SELECT * FROM "Feedback";'
+        if ctx.author.id in ADMINS:
+            query = 'SELECT * FROM "Feedback";'
 
-        rows = await bot.db.fetch(query)
-        for row in rows:
-            await ctx.send(f"```{row}```")
+            rows = await bot.db.fetch(query)
+            for row in rows:
+                await ctx.send(f"```{row}```")
 
     @bot.command()
     async def bugReport(ctx):
@@ -53,11 +56,12 @@ async def run():
 
     @bot.command()
     async def bugreports(ctx):
-        query = 'SELECT * FROM "BugReport";'
+        if ctx.author.id in ADMINS:
+            query = 'SELECT * FROM "BugReport";'
 
-        rows = await bot.db.fetch(query)
-        for row in rows:
-            await ctx.send(f"```{row}```")
+            rows = await bot.db.fetch(query)
+            for row in rows:
+                await ctx.send(f"```{row}```")
 
     @bot.command()
     async def rewards(ctx):
